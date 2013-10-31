@@ -28,27 +28,36 @@ using namespace cv;
 /******************************* Global variables *****************************/
 /* Default location of haarcascade analysis files */
 String cascadeName = "/usr/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"; // FIXME
-String nestedCascadeName = "/usr/share/opencv/haarcascades/haarcascade_eye.xml"; //FIXME
 
 /***************************** Function prototypes ****************************/
 /* Detect and draw function */
 void detectAndDraw(
    Mat &              img, 
-   CascadeClassifier &cascade, 
-   CascadeClassifier &nestedCascade, 
-   double             scale);
+   CascadeClassifier &cascade,
+   double             scale,
+   String             outFile);
 
 /* Main function */
-int main( int argc, const char** argv )
+int main(
+   int          argc, 
+   const char **argv )
 {
    Mat image;
-   CascadeClassifier cascade, nestedCascade; // Cascades to use
+   CascadeClassifier cascade; // Cascade to use
    double scale = RESULT_SCALE; // Scale to use
    String inputName; // Name of the input file
+   String outputName; // Name of the input file
+
+   if (argc != 3)
+   {
+      cout << "Usage: ./facedetect <input_file> <output_file>" << endl;
+      return -1;
+   }
 
    // Assign input file
    inputName.assign(argv[1]);
 
+   // Load input image
    if(inputName.size())
    {
       image = imread(inputName, 1);
@@ -64,6 +73,9 @@ int main( int argc, const char** argv )
       return -1;
    }
 
+   // Assign outfile file
+   outputName.assign(argv[2]);
+
    // If we can load primary cascade notify
    if(!cascade.load(cascadeName))
    {
@@ -71,24 +83,20 @@ int main( int argc, const char** argv )
       return -1;
    }
 
-   // If we can load nested cascade notify
-   if(!nestedCascade.load(nestedCascadeName))
-   {
-      cerr << "ERROR: Could not load classifier cascade" << endl;
-      return -1;
-   }
-
-   imshow("Normal", image);
    if(!image.empty())
    {
-      detectAndDraw(image, cascade, nestedCascade, scale);
+      detectAndDraw(image, cascade, scale, outputName);
    }
 
    return 0;
 } /* main() */
 
 /* Function Implementation */
-void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale)
+void detectAndDraw(
+   Mat&               img, 
+   CascadeClassifier &cascade, 
+   double             scale,
+   String             outFile)
 {
    int i = 0;
    double t = 0;
@@ -149,11 +157,10 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nest
 
       /* Draw a circle around the detected face */
       circle(img, center, radius, color, 3, 8, 0);
-
    }
    
    /* Store processed image */
-   imwrite("output.jpg", img);
+   imwrite(outFile, img);
 
 } /* detectAndDraw() */
 
