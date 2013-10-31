@@ -20,6 +20,7 @@ SRCDIR		= src
 BINDIR		= bin
 INCLUDEDIR	= include
 OBJECT		= facedetect
+INSTALL_PREFIX	= $(BINDIR)
 
 .PHONY: all build install clean
 
@@ -27,12 +28,14 @@ OBJECT		= facedetect
 all: build
 
 build:
-	@echo Compiling the source code
+	@echo "Compiling the source code"
 	@g++ -ggdb `pkg-config --cflags opencv` -o $(BINDIR)/$(OBJECT) $(SRCDIR)/$(OBJECT).cpp `pkg-config --libs opencv`
 
 install:
+	@echo "Installing binaries"
+	@cp $(BINDIR)/* $(INSTALL_PREFIX)
 
 clean:
-	@echo Removing the binaries
+	@echo "Removing the binaries"
 	@rm -f $(BINDIR)/$(OBJECT)
 
