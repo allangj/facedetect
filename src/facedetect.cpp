@@ -139,7 +139,7 @@ void detectAndDraw(
    t = (double)cvGetTickCount() - t;
 
    /* Print detection time */
-   printf("First detection time = %g ms\n", t/((double)cvGetTickFrequency()*1000.));
+   printf("Time= %g ms\n", t/((double)cvGetTickFrequency()*1000.));
 
    /* On the detected areas on the vector do nested cascade and create circles */
    for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++, i++ )
